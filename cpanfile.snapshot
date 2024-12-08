@@ -1,0 +1,8 @@
+# carton snapshot format: version 1.0
+DISTRIBUTIONS
+  Mozilla-CA-20240924
+    pathname: L/LW/LWP/Mozilla-CA-20240924.tar.gz
+    provides:
+      Mozilla::CA 20240924
+    requirements:
+      ExtUtils::MakeMaker 0
