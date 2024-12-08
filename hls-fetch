@@ -202,9 +202,9 @@ foreach my $sequence (sort { $a <=> $b } keys %segments) {
 
   if (!$opt{'no-decrypt'} && defined $segment->{'cryptkey_url'} && !exists $cryptkeys{$segment->{'cryptkey_url'}}) {
     print "URL (key): ", $segment->{'cryptkey_url'}, "\n" if $opt{'verbose'};
-    #warn $segment->{'cryptkey_url'};
-    my $cryptkey = eval { fetch_url($segment->{'cryptkey_url'}) };
-    die "$segment->{'cryptkey_url'}: cannot fetch encryption key: $@" if $@;
+    my $cryptkey_url = url($segment->{'cryptkey_url'}, $url)->abs()->as_string();
+    my $cryptkey = eval { fetch_url($cryptkey_url) };
+    die "$cryptkey_url: cannot fetch encryption key: $@" if $@;
     $cryptkey = join('', map { sprintf('%02x', ord) } split(//, $cryptkey));
     print "Key: $cryptkey\n" if $opt{'verbose'};
     $cryptkeys{$segment->{'cryptkey_url'}} = $cryptkey;
