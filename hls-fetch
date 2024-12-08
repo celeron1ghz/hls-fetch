@@ -71,6 +71,7 @@ if (!exists $opt{'output'}) {
 my ($url) = @ARGV;
 my $browser = LWP::UserAgent->new;
 $browser->cookie_jar({});
+$browser->agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36');
 
 my $video_file = $opt{'output'};
 die "$video_file: file exists, not overwriting without -f/--force\n" if !$opt{'force'} && -e $video_file;
@@ -197,10 +198,11 @@ foreach my $sequence (sort { $a <=> $b } keys %segments) {
   my $segment = $segments{$sequence};
   my $segment_url = url($segment->{'url'}, $url)->abs()->as_string();
   print "URL (segment $sequence): $segment_url\n" if $opt{'verbose'};
-  printf "\r%d/%d", $sequence, scalar keys %segments if !$opt{'quiet'} && !$opt{'verbose'};
+  printf "\r%d/%d\n", $sequence, scalar keys %segments if !$opt{'quiet'} && !$opt{'verbose'};
 
   if (!$opt{'no-decrypt'} && defined $segment->{'cryptkey_url'} && !exists $cryptkeys{$segment->{'cryptkey_url'}}) {
     print "URL (key): ", $segment->{'cryptkey_url'}, "\n" if $opt{'verbose'};
+    #warn $segment->{'cryptkey_url'};
     my $cryptkey = eval { fetch_url($segment->{'cryptkey_url'}) };
     die "$segment->{'cryptkey_url'}: cannot fetch encryption key: $@" if $@;
     $cryptkey = join('', map { sprintf('%02x', ord) } split(//, $cryptkey));
